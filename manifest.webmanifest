@@ -1,0 +1,64 @@
+{
+  "name": "Volt Architecture & Design Decisions",
+  "short_name": "Volt Docs",
+  "description": "Offline-ready interactive architecture specifications, 27 engineering decisions, and 16 multi-touch zoomable diagrams for the Volt Autonomous Drone Delivery Platform.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0b101b",
+  "theme_color": "#0b57d0",
+  "categories": [
+    "developer tools",
+    "productivity",
+    "education"
+  ],
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "All 16 Diagrams",
+      "short_name": "Diagrams",
+      "description": "Open the touch-zoomable diagram atlas",
+      "url": "./#diagrams",
+      "icons": [
+        {
+          "src": "./icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "27 Design Decisions",
+      "short_name": "Decisions",
+      "description": "Browse architectural and GCP stack decisions",
+      "url": "./#decisions",
+      "icons": [
+        {
+          "src": "./icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}

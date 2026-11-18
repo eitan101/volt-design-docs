@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Volt Architecture &amp; Design Decisions — Interactive Diagram &amp; Spec Hub</title>
+  <meta name="description" content="Complete system architecture, 27 engineering trade-off decisions, and 16 touch-zoomable Mermaid diagrams (ERD, C4, Sequence Flows, GCP Active-Active &amp; Local Simulators) for the Volt Autonomous Drone Delivery Platform." />
+  <meta name="theme-color" content="#0b101b" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#f4f7fb" media="(prefers-color-scheme: light)" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Volt Docs" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png" />
+  <link rel="stylesheet" href="./vendor/katex.min.css" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('volt_docs_theme');
+        if (saved === 'dark' || saved === 'light') {
+          document.documentElement.setAttribute('data-theme', saved);
+        } else {
+          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <!-- Top Navigation Header -->
+  <header class="site-header" id="site-header">
+    <div class="header-inner">
+      <div class="brand-group">
+        <button type="button" class="icon-btn mobile-only" id="mobile-drawer-btn" aria-label="Open document and section navigation" aria-expanded="false">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="16" y2="18"></line></svg>
+        </button>
+        <a href="#doc/overview" class="brand-link" id="brand-home-link">
+          <span class="brand-mark" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13.8 2L5 14h6.1L9.8 22 19 10h-6.1L13.8 2z"/></svg>
+          </span>
+          <span class="brand-text">
+            <span class="brand-name">Volt</span>
+            <span class="brand-sub">Architecture &amp; Design</span>
+          </span>
+        </a>
+      </div>
+
+      <!-- Primary Mode Switcher (Desktop inline, Mobile sticky bar below) -->
+      <nav class="mode-nav" aria-label="Primary view mode">
+        <button type="button" class="mode-tab is-active" id="mode-tab-docs" data-mode="docs">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          <span>Docs</span>
+          <span class="mode-count" id="count-docs">7</span>
+        </button>
+        <button type="button" class="mode-tab" id="mode-tab-diagrams" data-mode="diagrams">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><path d="M10 6.5h4M17.5 10v4M6.5 10v7.5h7.5"></path></svg>
+          <span>Diagrams</span>
+          <span class="mode-count" id="count-diagrams">16</span>
+        </button>
+        <button type="button" class="mode-tab" id="mode-tab-decisions" data-mode="decisions">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18"></path><path d="M5 8l7-5 7 5"></path><rect x="2" y="8" width="6" height="5" rx="1"></rect><rect x="16" y="8" width="6" height="5" rx="1"></rect></svg>
+          <span>Decisions</span>
+          <span class="mode-count" id="count-decisions">27</span>
+        </button>
+      </nav>
+
+      <div class="header-actions">
+        <button type="button" class="pwa-header-btn" id="pwa-status-btn" aria-label="Install app or check offline availability" title="Offline access &amp; Home Screen install">
+          <span class="pwa-dot" id="pwa-status-dot" aria-hidden="true"></span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <span class="pwa-btn-label" id="pwa-status-label">Install</span>
+        </button>
+        <button type="button" class="search-trigger-btn" id="search-open-btn" aria-label="Search documentation, diagrams, and decisions">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <span class="search-placeholder">Search…</span>
+          <kbd class="search-kbd">⌘K</kbd>
+        </button>
+        <button type="button" class="icon-btn" id="theme-toggle-btn" aria-label="Toggle color theme" title="Switch light / dark theme">
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Quick Document Strip (visible in Docs mode on narrow screens) -->
+    <div class="mobile-doc-strip" id="mobile-doc-strip" role="navigation" aria-label="Document chapters"></div>
+  </header>
+
+  <!-- Mobile Slide-Over Navigation & TOC Drawer -->
+  <div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
+  <aside class="mobile-drawer" id="mobile-drawer" aria-label="Document chapters and sections" hidden>
+    <div class="drawer-header">
+      <span class="drawer-title">Design Navigation</span>
+      <button type="button" class="icon-btn" id="mobile-drawer-close" aria-label="Close navigation drawer">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="drawer-body">
+      <div class="drawer-section-label">Documents</div>
+      <nav id="drawer-doc-list" class="sidebar-doc-list"></nav>
+      <div class="drawer-section-label" id="drawer-toc-label">On This Page</div>
+      <nav id="drawer-toc-list" class="toc-list"></nav>
+    </div>
+  </aside>
+
+  <!-- Main Application Shell -->
+  <div class="app-shell" id="main-content">
+    <!-- VIEW 1: DOCUMENTS READER -->
+    <div class="docs-workspace" id="view-docs">
+      <aside class="left-sidebar" aria-label="Documents list">
+        <div class="sidebar-group-title">Deliverables</div>
+        <nav id="desktop-doc-list" class="sidebar-doc-list"></nav>
+      </aside>
+
+      <main class="doc-main">
+        <div id="overview-hero-slot"></div>
+        <article class="markdown-body" id="doc-article" aria-live="polite"></article>
+        <nav class="doc-pager" id="doc-pager" aria-label="Previous and next document"></nav>
+      </main>
+
+      <aside class="right-toc" aria-label="Table of contents">
+        <div class="toc-sticky">
+          <div class="sidebar-group-title">On This Page</div>
+          <nav id="desktop-toc-list" class="toc-list"></nav>
+        </div>
+      </aside>
+    </div>
+
+    <!-- VIEW 2: DIAGRAMS ATLAS -->
+    <section class="atlas-workspace" id="view-diagrams" hidden aria-label="Interactive diagrams atlas">
+      <div class="workspace-header">
+        <div>
+          <h1 class="workspace-title">Interactive Architecture &amp; Sequence Diagrams</h1>
+          <p class="workspace-subtitle">All 16 vector diagrams rendered directly from the Markdown specs. Tap any diagram to open the full-screen multi-touch viewer with 2-finger pinch-zoom, 1-finger pan, and 1:1 readable text presets.</p>
+        </div>
+        <div class="filter-pills" id="diagram-filter-pills" role="tablist" aria-label="Filter diagrams by category"></div>
+      </div>
+      <div class="diagram-atlas-grid" id="diagram-atlas-grid"></div>
+    </section>
+
+    <!-- VIEW 3: ARCHITECTURAL DECISIONS LOG -->
+    <section class="decisions-workspace" id="view-decisions" hidden aria-label="Architectural and technology decisions">
+      <div class="workspace-header">
+        <div>
+          <h1 class="workspace-title">Architectural &amp; GCP Technology Decisions</h1>
+          <p class="workspace-subtitle">All 27 documented engineering trade-offs across data modeling, microservices decomposition, Active-Active DR, saga coordination, Google Cloud Platform stack layers, and local closed-loop actor simulation.</p>
+        </div>
+        <div class="decisions-controls">
+          <div class="filter-pills" id="decision-filter-pills" role="tablist" aria-label="Filter decisions by domain"></div>
+          <div class="inline-filter-box">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="search" id="decision-search-input" placeholder="Filter decisions (e.g. Spanner, 200k, Outbox, H3, Deck.gl)…" aria-label="Filter design decisions" />
+          </div>
+        </div>
+      </div>
+      <div class="decisions-list" id="decisions-list"></div>
+    </section>
+  </div>
+
+  <!-- FULLSCREEN MULTI-TOUCH DIAGRAM STUDIO -->
+  <div class="fs-modal" id="diagram-fullscreen-modal" role="dialog" aria-modal="true" aria-labelledby="fs-diagram-title" hidden>
+    <div class="fs-topbar">
+      <div class="fs-title-group">
+        <span class="diagram-badge" id="fs-diagram-kind">Diagram</span>
+        <div class="fs-title-stack">
+          <h2 class="fs-title" id="fs-diagram-title">Diagram Title</h2>
+          <button type="button" class="fs-doc-link" id="fs-jump-doc-btn">View in document →</button>
+        </div>
+      </div>
+      <button type="button" class="fs-close-btn" id="fs-btn-close" aria-label="Close fullscreen diagram">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        <span class="hide-xs">Close</span>
+      </button>
+    </div>
+
+    <div class="fs-stage" id="fs-diagram-stage">
+      <div class="fs-svg-host" id="fs-svg-host"></div>
+      <div class="fs-gesture-toast" id="fs-gesture-toast" aria-hidden="true">Pinch with 2 fingers to zoom · Drag with 1 finger to pan · Double-tap to zoom</div>
+    </div>
+
+    <!-- Thumb-Reachable Bottom Floating Control Dock -->
+    <div class="fs-bottom-dock" role="toolbar" aria-label="Fullscreen diagram navigation and zoom controls">
+      <div class="fs-nav-cluster">
+        <button type="button" class="dock-btn" id="fs-btn-prev" aria-label="Previous diagram" title="Previous diagram">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <span class="fs-counter" id="fs-diagram-counter">1 / 16</span>
+        <button type="button" class="dock-btn" id="fs-btn-next" aria-label="Next diagram" title="Next diagram">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+      </div>
+
+      <div class="fs-preset-cluster">
+        <button type="button" class="dock-pill" id="fs-btn-fit-all" title="Fit whole diagram on screen">Fit All</button>
+        <button type="button" class="dock-pill" id="fs-btn-fit-width" title="Fit diagram width to screen">Fit Width</button>
+        <button type="button" class="dock-pill dock-pill-accent" id="fs-btn-readable" title="Zoom to crisp 1:1 readable text size">Readable</button>
+      </div>
+
+      <div class="fs-zoom-cluster">
+        <button type="button" class="dock-btn" id="fs-btn-zoom-out" aria-label="Zoom out">−</button>
+        <span class="fs-zoom-readout" id="fs-zoom-label">100%</span>
+        <button type="button" class="dock-btn" id="fs-btn-zoom-in" aria-label="Zoom in">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSTANT GLOBAL SEARCH MODAL -->
+  <div class="search-modal-backdrop" id="search-modal" role="dialog" aria-modal="true" aria-label="Search documentation" hidden>
+    <div class="search-dialog">
+      <div class="search-input-row">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="search" id="global-search-input" placeholder="Search diagrams, decisions, entities, services, SLAs…" autocomplete="off" />
+        <button type="button" class="search-esc-btn" id="search-close-btn">Esc</button>
+      </div>
+      <div class="search-results" id="global-search-results"></div>
+    </div>
+  </div>
+
+  <!-- OFFLINE ACCESS & INSTALL PWA MODAL -->
+  <div class="search-modal-backdrop" id="pwa-modal" role="dialog" aria-modal="true" aria-labelledby="pwa-modal-title" hidden>
+    <div class="pwa-dialog">
+      <div class="pwa-dialog-header">
+        <div class="pwa-app-badge">
+          <img src="./icons/icon-192.png" width="42" height="42" alt="Volt Docs app icon" class="pwa-app-icon" />
+          <div>
+            <h2 class="pwa-dialog-title" id="pwa-modal-title">Offline Access &amp; App Install</h2>
+            <p class="pwa-dialog-sub" id="pwa-cache-summary">Checking offline storage…</p>
+          </div>
+        </div>
+        <button type="button" class="icon-btn" id="pwa-modal-close" aria-label="Close install dialog">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="pwa-dialog-body">
+        <div class="pwa-status-banner" id="pwa-status-banner">
+          <strong id="pwa-banner-headline">Saving all docs &amp; diagrams for offline use…</strong>
+          <span id="pwa-banner-detail">Once cached, all 7 documents, 16 vector diagrams, and 27 architectural decisions open instantaneously even in Airplane Mode.</span>
+        </div>
+
+        <div id="pwa-native-install-wrap" hidden>
+          <button type="button" class="primary-action-btn pwa-full-btn" id="pwa-native-install-btn">
+            Install Volt Docs App on This Device
+          </button>
+        </div>
+
+        <div class="pwa-platform-guides">
+          <div class="pwa-guide-card">
+            <div class="pwa-guide-title">iPhone / iPad (Safari)</div>
+            <ol class="pwa-guide-steps">
+              <li>Tap the <strong>Share</strong> button (square with up-arrow) in Safari's toolbar.</li>
+              <li>Scroll down and tap <strong>Add to Home Screen</strong>, then tap <strong>Add</strong>.</li>
+            </ol>
+          </div>
+          <div class="pwa-guide-card">
+            <div class="pwa-guide-title">Android (Chrome)</div>
+            <ol class="pwa-guide-steps">
+              <li>Tap <strong>Install Volt Docs App</strong> above, or open Chrome's <strong>⋮</strong> menu.</li>
+              <li>Tap <strong>Install app</strong> / <strong>Add to Home screen</strong>.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./vendor/mermaid.min.js"></script>
+  <script src="./docs-data.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
